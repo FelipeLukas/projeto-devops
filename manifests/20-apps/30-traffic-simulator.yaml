@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: traffic-simulator
+  namespace: traffic-sim
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: simulator
+              image: python:3.12-alpine
+              command: ["python3", "/scripts/traffic_simulator.py", "all"]
+              volumeMounts:
+                - name: script
+                  mountPath: /scripts
+          volumes:
+            - name: script
+              configMap:
+                name: traffic-simulator-script
+                items:
+                  - key: traffic_simulator.py
+                    path: traffic_simulator.py

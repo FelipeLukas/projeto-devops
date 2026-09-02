@@ -1,0 +1,38 @@
+# O simulador só pode falar com o frontend. Uma tentativa de acesso direto
+# ao backend a partir daqui deve ser recusada pela rede -- é o teste
+# negativo que comprova que o isolamento por namespace está funcionando.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-egress-to-frontend
+  namespace: traffic-sim
+spec:
+  podSelector: {}
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              tier: frontend
+      ports:
+        - protocol: TCP
+          port: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-from-traffic-sim
+  namespace: frontend
+spec:
+  podSelector:
+    matchLabels:
+      app: web
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              tier: traffic-sim
+      ports:
+        - protocol: TCP
+          port: 80

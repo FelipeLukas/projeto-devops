@@ -1,0 +1,39 @@
+# Regra de negócio central da demo: o frontend só enxerga o backend,
+# na porta de aplicação, e o backend só aceita conexões vindas do frontend.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: frontend-egress-to-backend
+  namespace: frontend
+spec:
+  podSelector:
+    matchLabels:
+      app: web
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              tier: backend
+      ports:
+        - protocol: TCP
+          port: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-ingress-from-frontend
+  namespace: backend
+spec:
+  podSelector:
+    matchLabels:
+      app: api
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              tier: frontend
+      ports:
+        - protocol: TCP
+          port: 80

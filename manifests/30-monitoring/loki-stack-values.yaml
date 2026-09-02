@@ -1,0 +1,24 @@
+loki:
+  persistence:
+    enabled: false
+
+promtail:
+  enabled: true
+  config:
+    snippets:
+      pipelineStages:
+        - cri: {}
+        # Extrai o campo "pattern" do JSON logado pelo traffic_simulator.py
+        # para virar um label pesquisável no Grafana (normal/burst/blocked).
+        - json:
+            expressions:
+              pattern: pattern
+              target: target
+              result: result
+        - labels:
+            pattern:
+            target:
+            result:
+
+grafana:
+  enabled: false # já instalamos o Grafana separado, com datasources próprios

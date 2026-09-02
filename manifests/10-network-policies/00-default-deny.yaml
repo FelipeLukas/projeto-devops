@@ -1,0 +1,28 @@
+# Zero-trust baseline: nega todo tráfego de entrada e saída por padrão.
+# Cada exceção é declarada explicitamente nos arquivos seguintes.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: frontend
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: backend
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: traffic-sim
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]

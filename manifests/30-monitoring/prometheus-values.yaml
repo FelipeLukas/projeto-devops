@@ -1,0 +1,22 @@
+server:
+  service:
+    type: ClusterIP
+  persistentVolume:
+    enabled: false
+
+extraScrapeConfigs: |
+  - job_name: 'frontend-nginx'
+    static_configs:
+      - targets: ['frontend-web.frontend.svc.cluster.local:9113']
+        labels:
+          service: frontend
+  - job_name: 'backend-nginx'
+    static_configs:
+      - targets: ['backend-api.backend.svc.cluster.local:9113']
+        labels:
+          service: backend
+
+alertmanager:
+  enabled: false
+pushgateway:
+  enabled: false

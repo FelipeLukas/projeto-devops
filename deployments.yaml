@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testando
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: testando
+  template:
+    metadata:
+      labels:
+        app: testando
+    spec:
+      containers:
+      - name: testando-container
+        image: testando:v1
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: testando-service
+spec:
+  type: NodePort
+  selector:
+    app: testando
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: melhorando
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: melhorando
+  template:
+    metadata:
+      labels:
+        app: melhorando
+    spec:
+      containers:
+      - name: melhorando-container
+        image: melhorando:v1
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: melhorando-service
+spec:
+  type: NodePort
+  selector:
+    app: melhorando
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: confirmando
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: confirmando
+  template:
+    metadata:
+      labels:
+        app: confirmando
+    spec:
+      containers:
+      - name: confirmando-container
+        image: confirmando:v1
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: confirmando-service
+spec:
+  type: NodePort
+  selector:
+    app: confirmando
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30003
+

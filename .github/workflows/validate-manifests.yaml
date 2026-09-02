@@ -1,0 +1,25 @@
+name: Validate Kubernetes manifests
+
+on:
+  push:
+    paths:
+      - "manifests/**"
+  pull_request:
+    paths:
+      - "manifests/**"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: yamllint
+        run: |
+          pip install yamllint
+          yamllint -d "{extends: default, rules: {line-length: disable}}" manifests/
+
+      - name: kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar xz
+          ./kubeconform -summary -ignore-missing-schemas -kubernetes-version 1.30.0 manifests/**/*.yaml
